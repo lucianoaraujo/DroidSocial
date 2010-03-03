@@ -16,14 +16,15 @@ public class main extends Activity {
         Map<String, String> params = new HashMap<String, String>();
         params.put("method", "Auth.createToken");
         params.put("api_key", "aaf81111730a8fa14eeabee5d18c3f91");
+        
         try 
         {
         	String out = req.SendGetRequest(params);
         	TextView v = (TextView)this.findViewById(R.id.output);
-        	v.setText("");
+        	v.setText(out);
         }
         catch (Exception e) {
-        
+        	String m = e.getMessage();
         }
         
     }

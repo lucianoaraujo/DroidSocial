@@ -53,15 +53,20 @@ public class SocialNetworkRequest {
 	
 	public String SendGetRequest(Map<String, String> params) throws IOException {
 		String output = "none";
-		HttpGet getReq = new HttpGet(this.ServiceURI + ToURIStr(params));
+		String u = this.ServiceURI  + ToURIStr(params);
 		try {
+			// PROBLEM HERE!
+			HttpGet getReq = new HttpGet(u);
 			this.Response = this.Client.execute(getReq);
 			HttpEntity en = this.Response.getEntity();
 			InputStream instream = en.getContent();
-			
+			output = convertStreamToString(instream);
 			
 		} catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
+			this.ErrorString = e.getMessage();
+		}
+		catch (Exception e) {
 			this.ErrorString = e.getMessage();
 		}
 		
@@ -89,7 +94,37 @@ public class SocialNetworkRequest {
 			}
 		}
 		catch(UnsupportedEncodingException e) { /* Do we need to do anything here? */ }
+		catch (Exception e) {
+			
+		}
 		return sb.toString();
 	}
+	
+    private static String convertStreamToString(InputStream is) {
+        /*
+         * To convert the InputStream to String we use the BufferedReader.readLine()
+         * method. We iterate until the BufferedReader return null which means
+         * there's no more data to read. Each line will appended to a StringBuilder
+         * and returned as String.
+         */
+        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        StringBuilder sb = new StringBuilder();
+ 
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
+    }
 	
 }
