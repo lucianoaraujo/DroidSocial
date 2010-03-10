@@ -1,48 +1,44 @@
 package DroidSocial.Network;
 
-import java.io.IOException;
+// necessary packages for using streams
 import java.io.*;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+
+// necessary for CGI encoding
 import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Map;
+
+// necessary for 
+import java.util.*;
 import java.util.Set;
 
+// necessary for communicating via http
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.*;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.HttpParams;
 
-public class SocialNetworkRequest {
+// necessary for generating and parsing xml 
+import org.xml.sax.*;
+import org.xml.sax.helpers.*;
 
-	/*
-	 * Define some constants that are important to HTTP
-	 */
-	public static final String _POST_ 	= "POST";
-	public static final String _GET_ 	= "GET";
-	public static final String _PUT_ 	= "PUT";
-	public static final String _DELETE_ = "DELETE";
+
+public abstract class SocialNetworkRequest {
 	
+	// The base URI that all services of this network reside at
 	private String ServiceURI = "";
 	
 	// Objects that are critical to http interaction
 	private HttpClient Client = null;
 	private HttpResponse Response = null;
 	
-	// Default the RequestMethod to get
-	private String RequestMethod = _GET_;
+	protected SocialNetwork NetworkObj = null;
 	
-	// Strings to store the param strings
-	private String GetParamString = "";
-	private String PostParamString = "";
 	
-	private String ErrorString = "";
 	
-	private Map<String, String> Headers = new HashMap<String, String>();
-	
+	/**
+	 * Constructor: 
+	 * @param service_uri : the base uri of all services on this network
+	 */
 	public SocialNetworkRequest(String service_uri) {
 
 		this.ServiceURI = service_uri + "?";
@@ -51,32 +47,58 @@ public class SocialNetworkRequest {
 		
 	}
 	
-	public String SendGetRequest(Map<String, String> params) throws IOException {
+	protected SocialNetworkResponse SendGetRequest(Map<String, String> get_params) {
 		String output = "none";
-		String u = this.ServiceURI  + ToURIStr(params);
+	
 		try {
-			// PROBLEM HERE!
-			HttpGet getReq = new HttpGet(u);
+			// Create the get request object with any parameters
+			HttpGet getReq = new HttpGet(this.ServiceURI  + ToURIStr(get_params));
 			this.Response = this.Client.execute(getReq);
+			
+			// Get the HttpEntity that contains the response data
 			HttpEntity en = this.Response.getEntity();
 			InputStream instream = en.getContent();
-			output = convertStreamToString(instream);
-			
-		} catch (ClientProtocolException e) {
+			output = StreamToString(instream);
+		}
+		catch (ClientProtocolException e) {
 			// TODO Auto-generated catch block
-			this.ErrorString = e.getMessage();
+			String p = e.getMessage();
+		}
+		
+		catch (IOException i) {
+			String p = i.getMessage();
 		}
 		catch (Exception e) {
-			this.ErrorString = e.getMessage();
+			String p = e.getMessage();
 		}
 		
-		return output;
+		return new SocialNetworkResponse(output);
 	}
 	
-	public void SendPostRequest() {
+	protected SocialNetworkResponse SendPostRequest(Map<String, String> get_params) {
+		String output = "none";
 		
+		try {
+			HttpPost p = new HttpPost(this.ServiceURI + ToURIStr(get_params));
+			this.Response = this.Client.execute(p);
+			
+			HttpEntity en = this.Response.getEntity();
+			InputStream in = en.getContent();
+			output = StreamToString(in);
+		}
+		catch (Exception e) {
+			
+		}
+		
+		return new SocialNetworkResponse(output);
 	}
 	
+	/**
+	 * TODO: ADD other methods for performing HTTP Post Requests
+	 * 		 that carry data in the message by using File and FileEntity objects
+	 * 		 http://www.mail-archive.com/android-developers@googlegroups.com/msg72456.html
+	 */
+
 
 	/**
 	 * Convert a String indexed Map of Strings to a URI encoded UTF-8 string
@@ -94,37 +116,31 @@ public class SocialNetworkRequest {
 			}
 		}
 		catch(UnsupportedEncodingException e) { /* Do we need to do anything here? */ }
-		catch (Exception e) {
-			
-		}
+		catch (Exception e) {}
 		return sb.toString();
 	}
 	
-    private static String convertStreamToString(InputStream is) {
-        /*
-         * To convert the InputStream to String we use the BufferedReader.readLine()
-         * method. We iterate until the BufferedReader return null which means
-         * there's no more data to read. Each line will appended to a StringBuilder
-         * and returned as String.
-         */
+    protected static String StreamToString(InputStream is) {
+
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();
  
-        String line = null;
+        String line = "";
         try {
             while ((line = reader.readLine()) != null) {
                 sb.append(line + "\n");
             }
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } finally {
+        }
+        finally {
             try {
-                is.close();
+                is.	close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return sb.toString();
     }
-	
 }
