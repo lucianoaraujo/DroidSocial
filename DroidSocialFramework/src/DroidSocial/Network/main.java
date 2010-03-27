@@ -1,13 +1,14 @@
 package DroidSocial.Network;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import DroidSocial.Network.*;
+import DroidSocial.Network.R.layout;
+import DroidSocial.Network.R.id;
 import DroidSocial.Facebook.*;
-
-import java.util.*;
 /**
  * 
  * FACEBOOK
@@ -37,8 +38,8 @@ public class main extends Activity {
 	
 	private static final String fb_secret = "386b44cee55d8fdfef23a77e52ea524c";
 	
-	private TextView apiKey;
-	private TextView secret;
+	private TextView apiKeyView;
+	private TextView secretView;
 	
 	/** Called when the activity is first created. */
     @Override
@@ -46,17 +47,15 @@ public class main extends Activity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main);
     
-        this.apiKey = (TextView) this.findViewById(R.id.api_key);
-        this.secret = (TextView) this.findViewById(R.id.secret);
+        this.apiKeyView = (TextView) this.findViewById(R.id.api_key);
+        this.secretView = (TextView) this.findViewById(R.id.secret);
         
-        this.apiKey.setText("API KEY: " + fb_api_key);
-        this.secret.setText("Secret: " + fb_secret);
+        this.apiKeyView.setText("API KEY: " + fb_api_key);
+        this.secretView.setText("Secret: " + fb_secret);
         
         Facebook fb = new Facebook(fb_api_key, fb_secret);
         fb.SetDefaultResponseHandlers();
-        String response = fb.AuthCreateToken();
-        TextView t = (TextView) this.findViewById(R.id.output);
-        t.setText(response);
-        
     }
+    
+    
 }

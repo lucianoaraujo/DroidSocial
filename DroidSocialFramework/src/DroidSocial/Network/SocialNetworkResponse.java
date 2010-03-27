@@ -5,9 +5,9 @@ import java.util.Map;
 public class SocialNetworkResponse {
  
 	protected SocialNetwork Owner = null;
-	protected SocialNetworkResponseHandler Handler = null;
-	private String ResponseText = null;
-	private String ResponseType = null;
+	protected ISocialNetworkResponseHandler Handler = null;
+	protected String ResponseText = null;
+	protected String ResponseType = null;
 
 	// NO ARG CONSTRUCTOR for implementations
 	protected SocialNetworkResponse() {}

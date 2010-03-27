@@ -16,8 +16,6 @@ public abstract class SocialNetwork {
 	
 	private String API_KEY_VALUE = "";
 	
-	private String API_KEY_ID = ""; // the name that a particular network looks for to identify the api key
-
 	protected SocialNetworkRequest Request = null;
 	
 	protected SocialNetworkUser User = null;
@@ -27,14 +25,9 @@ public abstract class SocialNetwork {
 	
 	protected abstract void SetDefaultResponseHandlers();
 	
-	public SocialNetwork(String network_name, String api_identifier, String api_key)  {
-		// set the network name for shits and giggles
-		this.NetworkDisplayName = network_name;
-		
-		// remeber these values just in case
-		this.API_KEY_ID = api_identifier;
+	public SocialNetwork(String network_name, String api_key)  {
+		this.NetworkDisplayName = network_name;		
 		this.API_KEY_VALUE = api_key;
-		
 		// Set up the initial social network event handlers
 		this.ResponseHandlers = new HashMap<String,String>();
 	}

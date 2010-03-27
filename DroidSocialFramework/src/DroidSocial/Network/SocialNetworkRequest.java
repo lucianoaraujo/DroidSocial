@@ -45,7 +45,7 @@ public abstract class SocialNetworkRequest {
 	 */
 	public SocialNetworkRequest(String service_uri) {
 
-		this.ServiceURI = service_uri + "?";
+		this.ServiceURI = service_uri;
 		// Create the http client object
 		this.Client = new DefaultHttpClient();
 		
@@ -79,26 +79,29 @@ public abstract class SocialNetworkRequest {
 		return new SocialNetworkResponse(output);
 	}
 	
-	protected SocialNetworkResponse SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
+	protected SocialNetworkResponse SendPostRequest(String URI, Map<String, String> post_data, Map<String, String> get_params) {
 		//TODO: Add support for the get params that may be on this POST request
 		List<NameValuePair> post_req_fields = new ArrayList<NameValuePair>();
 		Set<String> keys = post_data.keySet();
 		String output = "";
+		
 		// Create key = value pairs
-		for (String key : keys) {
-			post_req_fields.add(new BasicNameValuePair(key, post_data.get(key)));
-		}
+		for (String key : keys) post_req_fields.add(new BasicNameValuePair(key, post_data.get(key)));
 		
 		
 		try {
 			// Create the post object and entity that it will carry
 			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(post_req_fields);
-			HttpPost p = new HttpPost(this.ServiceURI);
+			
+			String getStr = "";
+			if (get_params != null) getStr = ToURIStr(get_params);
+			
+			HttpPost p = new HttpPost(URI + "?" + getStr);
 			p.setEntity(entity);
 			
 			// execute the request
 			this.Response = this.Client.execute(p);
-			
+
 			HttpEntity en = this.Response.getEntity();
 			InputStream in = en.getContent();
 			output = StreamToString(in);
@@ -106,8 +109,15 @@ public abstract class SocialNetworkRequest {
 		catch (Exception e) {
 			String msg = e.getMessage();
 		}
+		finally {
+			this.Response = null;
+		}
 		
-		return new SocialNetworkResponse(output);
+		return new SocialNetworkResponse(output);	
+	}
+	
+	protected SocialNetworkResponse SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
+		return this.SendPostRequest(this.ServiceURI, post_data, get_params);
 	}
 	
 	/**
