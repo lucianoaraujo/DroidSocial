@@ -40,7 +40,7 @@ public class main extends Activity {
 	
 	private TextView apiKeyView;
 	private TextView secretView;
-	
+	private TextView out;
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,12 +49,21 @@ public class main extends Activity {
     
         this.apiKeyView = (TextView) this.findViewById(R.id.api_key);
         this.secretView = (TextView) this.findViewById(R.id.secret);
+        this.out = (TextView) this.findViewById(R.id.output);
         
         this.apiKeyView.setText("API KEY: " + fb_api_key);
         this.secretView.setText("Secret: " + fb_secret);
         
         Facebook fb = new Facebook(fb_api_key, fb_secret);
         fb.SetDefaultResponseHandlers();
+        String auth = "";
+        try {
+        	auth = fb.AuthCreateToken();
+        }
+        catch (Exception e) {
+        	String s = e.getMessage();
+        }
+        this.out.setText(auth);
     }
     
     

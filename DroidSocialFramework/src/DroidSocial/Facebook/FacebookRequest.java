@@ -60,10 +60,12 @@ public class FacebookRequest extends SocialNetworkRequest {
 			sig_params.put(Facebook.uri_Method_key, method_name);
 		}
 		
-		// Add the method params to the sig params
-		Set<String> keys = args.keySet();
-		for (String key : keys) {sig_params.put(key, args.get(key)); }
-	
+		if (args != null) {
+			// Add the method params to the sig params
+			Set<String> keys = args.keySet();
+			for (String key : keys) {sig_params.put(key, args.get(key)); }
+		}
+		
 		try {
 			String sig = this.Sig(new HashMap<String, String>(sig_params));
 			post_data.put(Facebook.uri_Sig_key, sig);

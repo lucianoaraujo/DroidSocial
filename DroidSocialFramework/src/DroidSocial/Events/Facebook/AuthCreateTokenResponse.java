@@ -23,6 +23,8 @@ public class AuthCreateTokenResponse extends AbstractSocialNetworkResponseHandle
 		if (this.authTokenFound) {
 			this.authTokenVal = new String(elem_value, start, length);
 			this.ResponseVals.put(Facebook.uri_AuthToken_key, this.authTokenVal);
+			// close the door
+			this.authTokenFound = false;
 		}
 	}
 	

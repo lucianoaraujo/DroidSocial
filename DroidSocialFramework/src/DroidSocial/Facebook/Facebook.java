@@ -141,7 +141,7 @@ public class Facebook extends SocialNetwork {
 	 * MAY NOT NEED THESE SINCE WE'RE USING THE FACEOOK CONNECT ROUTE OF AUTHENTICAITON
 	 * 
 	 * */
-	private String AuthGetSession(String authTokenVal) throws SocialNetworkAPIException  {
+	public String AuthGetSession(String authTokenVal) throws SocialNetworkAPIException  {
 		String sessionKey = "";
 		try {
 			Map<String, String> params = new HashMap<String, String>();
@@ -155,12 +155,12 @@ public class Facebook extends SocialNetwork {
 		return sessionKey;
 	}
 	
-	private String AuthCreateToken() throws SocialNetworkAPIException {
+	public String AuthCreateToken() throws SocialNetworkAPIException {
 		String authToken = "";
 		try {
 			// Set up the parameters we're going to need for the request
-			Map<String, String> params = new HashMap<String, String>();
-			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_createToken, params, null);
+			//Map<String, String> params = new HashMap<String, String>();
+			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_createToken, null, null);
 			Map<String, String> vals = fbr.Parse();
 			
 			authToken = vals.get(Facebook.uri_AuthToken_key);
