@@ -20,22 +20,43 @@ import java.util.*;
 	API URL: http://api.facebook.com/restserver.php
 	
 	sample call:  http://api.facebook.com/restserver.php?method=Auth.createToken&api_key=aaf81111730a8fa14eeabee5d18c3f91&sig=
+	
+	
+	New Application Credentials
+	api key: e9c48bbb18c3887c7c8cabd46c66dd9b
+	secret:  386b44cee55d8fdfef23a77e52ea524c
+	
+	
+	
  * @author Joey
  *
  */
 public class main extends Activity {
     
-	private static final String fb_api_key = "aaf81111730a8fa14eeabee5d18c3f91";
+	private static final String fb_api_key = "e9c48bbb18c3887c7c8cabd46c66dd9b";
 	
-	private static final String fb_secret = "f90ab6a2de28f13db2c9445e6300f809";
+	private static final String fb_secret = "386b44cee55d8fdfef23a77e52ea524c";
+	
+	private TextView apiKey;
+	private TextView secret;
 	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main);
+    
+        this.apiKey = (TextView) this.findViewById(R.id.api_key);
+        this.secret = (TextView) this.findViewById(R.id.secret);
+        
+        this.apiKey.setText("API KEY: " + fb_api_key);
+        this.secret.setText("Secret: " + fb_secret);
         
         Facebook fb = new Facebook(fb_api_key, fb_secret);
-        fb.LogIn("AS", "as");
+        fb.SetDefaultResponseHandlers();
+        String response = fb.AuthCreateToken();
+        TextView t = (TextView) this.findViewById(R.id.output);
+        t.setText(response);
+        
     }
 }

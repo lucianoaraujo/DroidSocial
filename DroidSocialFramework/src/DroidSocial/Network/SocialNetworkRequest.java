@@ -8,14 +8,18 @@ import java.net.URLEncoder;
 
 // necessary for 
 import java.util.*;
-import java.util.Set;
 
 // necessary for communicating via http
 import org.apache.http.*;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.*;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 
 // necessary for generating and parsing xml 
 import org.xml.sax.*;
@@ -75,11 +79,24 @@ public abstract class SocialNetworkRequest {
 		return new SocialNetworkResponse(output);
 	}
 	
-	protected SocialNetworkResponse SendPostRequest(Map<String, String> get_params) {
-		String output = "none";
+	protected SocialNetworkResponse SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
+		//TODO: Add support for the get params that may be on this POST request
+		List<NameValuePair> post_req_fields = new ArrayList<NameValuePair>();
+		Set<String> keys = post_data.keySet();
+		String output = "";
+		// Create key = value pairs
+		for (String key : keys) {
+			post_req_fields.add(new BasicNameValuePair(key, post_data.get(key)));
+		}
+		
 		
 		try {
-			HttpPost p = new HttpPost(this.ServiceURI + ToURIStr(get_params));
+			// Create the post object and entity that it will carry
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(post_req_fields);
+			HttpPost p = new HttpPost(this.ServiceURI);
+			p.setEntity(entity);
+			
+			// execute the request
 			this.Response = this.Client.execute(p);
 			
 			HttpEntity en = this.Response.getEntity();
@@ -87,7 +104,7 @@ public abstract class SocialNetworkRequest {
 			output = StreamToString(in);
 		}
 		catch (Exception e) {
-			
+			String msg = e.getMessage();
 		}
 		
 		return new SocialNetworkResponse(output);

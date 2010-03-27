@@ -22,9 +22,10 @@ public abstract class SocialNetwork {
 	
 	protected SocialNetworkUser User = null;
 	
-	protected Map<String, SocialNetworkResponseListener> ResponseListeners;
+	// A map of fully qualified class names to be instantiated on the fly
+	protected Map<String, String> ResponseHandlers;
 	
-	protected abstract void SetDefaultResponseListeners();
+	protected abstract void SetDefaultResponseHandlers();
 	
 	public SocialNetwork(String network_name, String api_identifier, String api_key)  {
 		// set the network name for shits and giggles
@@ -35,7 +36,7 @@ public abstract class SocialNetwork {
 		this.API_KEY_VALUE = api_key;
 		
 		// Set up the initial social network event handlers
-		this.ResponseListeners = new HashMap<String, SocialNetworkResponseListener>();
+		this.ResponseHandlers = new HashMap<String,String>();
 	}
 	
 	/**
@@ -43,12 +44,19 @@ public abstract class SocialNetwork {
 	 * @param HandlerKey The key to access this social network's event handler
 	 * @return
 	 */
+	
 	public final boolean ResponseSupported(String HandlerKey) {
-		return this.ResponseListeners.containsKey(HandlerKey);
+		return this.ResponseHandlers.containsKey(HandlerKey);
 	}
 	
-	public SocialNetworkResponseListener GetResponseListener(String ResponseListenerKey) {
-		if (this.ResponseSupported(ResponseListenerKey))return this.ResponseListeners.get(ResponseListenerKey);
-		else return this.ResponseListeners.get("UnsupportedResponse");
+	/**
+	 * Get the fully qualified name of the SocialNetworkResponse listener represented by ResponseListenerKey
+	 * @param ResponseListenerKey
+	 * @return
+	 */
+	public String GetResponseListener(String ResponseListenerKey) {
+		if (this.ResponseSupported(ResponseListenerKey))return this.ResponseHandlers.get(ResponseListenerKey);
+		else return this.ResponseHandlers.get("UnsupportedResponse");
 	}
+	
 }

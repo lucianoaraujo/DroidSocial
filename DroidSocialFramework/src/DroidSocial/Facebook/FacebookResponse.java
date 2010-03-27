@@ -1,9 +1,9 @@
 package DroidSocial.Facebook;
 
 import DroidSocial.Network.*;
-import org.xml.sax.*;
 import java.io.*;
-import org.xml.sax.helpers.ParserFactory;
+import java.util.Map;
+
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
@@ -19,22 +19,37 @@ import javax.xml.parsers.SAXParserFactory;
  */
 public class FacebookResponse extends SocialNetworkResponse {
 
-	public FacebookResponse(SocialNetworkResponse response, SocialNetwork owner) {
-		super(response.getResponseString());
-		try {	
-			this.Owner = owner;
+	public String raw = "";
+	
+	public FacebookResponse(SocialNetworkResponse response, SocialNetwork owner) {	
+		this.Owner = owner;
+		this.raw = response.getResponseString();
+	}
+	
+	public Map<String, String> Parse() {
+		Map<String, String> response = null;
+		try {
+			
+			// Get an xml parser instance from android
 			SAXParserFactory spf = SAXParserFactory.newInstance();
 			SAXParser parser = spf.newSAXParser();
 			
-			String response_text = response.getResponseString();
+			// Put the response XML blob into a byte stream
+			String response_text = this.getResponseString();
 			ByteArrayInputStream bais = new ByteArrayInputStream(response_text.getBytes());
 			
-			String response_type = response.getResponseType();
-			parser.parse(bais, (HandlerBase) this.Owner.GetResponseListener(response_type));
+			// Get the type of the response
+			String response_type = this.getResponseType();
+			
+			// Get the instance of the listener that is associated with the response type
+			Class listener_class = Class.forName(this.Owner.GetResponseListener(response_type));
+			this.Handler = (SocialNetworkResponseHandler) listener_class.newInstance();
+			response = this.Handler.Respond();
+	
 		}
 		catch (Exception e) {
 			String s = e.getMessage();
 		}
+		return response;
 	}
-	
 }
