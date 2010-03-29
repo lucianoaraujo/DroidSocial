@@ -51,12 +51,15 @@ public abstract class SocialNetworkRequest {
 		
 	}
 	
-	protected SocialNetworkResponse SendGetRequest(Map<String, String> get_params) {
+	protected String SendGetRequest(Map<String, String> get_params) throws SocialNetworkAPIException {
 		String output = "none";
-	
+		String get_param_string = "";
+		
+		if (get_params != null) get_param_string = ToURIStr(get_params);
+		
 		try {
 			// Create the get request object with any parameters
-			HttpGet getReq = new HttpGet(this.ServiceURI  + ToURIStr(get_params));
+			HttpGet getReq = new HttpGet(this.ServiceURI + get_param_string);
 			this.Response = this.Client.execute(getReq);
 			
 			// Get the HttpEntity that contains the response data
@@ -64,22 +67,18 @@ public abstract class SocialNetworkRequest {
 			InputStream instream = en.getContent();
 			output = StreamToString(instream);
 		}
-		catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			String p = e.getMessage();
-		}
-		
-		catch (IOException i) {
-			String p = i.getMessage();
-		}
 		catch (Exception e) {
-			String p = e.getMessage();
+			throw new SocialNetworkAPIException(e.getMessage());
 		}
 		
-		return new SocialNetworkResponse(output);
+		return output;
 	}
 	
-	protected SocialNetworkResponse SendPostRequest(String URI, Map<String, String> post_data, Map<String, String> get_params) {
+	protected String SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
+		return this.SendPostRequest(this.ServiceURI, post_data, get_params);
+	}
+	
+	protected String SendPostRequest(String URI, Map<String, String> post_data, Map<String, String> get_params) {
 		//TODO: Add support for the get params that may be on this POST request
 		List<NameValuePair> post_req_fields = new ArrayList<NameValuePair>();
 		Set<String> keys = post_data.keySet();
@@ -113,11 +112,7 @@ public abstract class SocialNetworkRequest {
 			this.Response = null;
 		}
 		
-		return new SocialNetworkResponse(output);	
-	}
-	
-	protected SocialNetworkResponse SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
-		return this.SendPostRequest(this.ServiceURI, post_data, get_params);
+		return output;	
 	}
 	
 	/**

@@ -66,6 +66,12 @@ public class Facebook extends SocialNetwork {
 	
 	private FacebookRequest Request = null;
 	
+
+	/**
+	 * Create a new instance of Facebook.
+	 * @param api_key
+	 * @param secret
+	 */
 	public Facebook(String api_key, String secret) {
 		// Handle the under the hood stuff
 		super("Facebook", api_key);

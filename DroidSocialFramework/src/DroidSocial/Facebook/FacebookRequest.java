@@ -35,12 +35,17 @@ public class FacebookRequest extends SocialNetworkRequest {
 		this.API_KEY = api_key;
 	}
 
-	public FacebookResponse FBGetRequest(Map<String, String> get_params) {
+	public FacebookResponse FBGetRequest(Map<String, String> get_params) throws SocialNetworkAPIException {
 		get_params.put(Facebook.uri_Version_key, Facebook.uri_Version_val);
+		FacebookResponse fb_response = null;
 		// Generate the sig value
-		
-		SocialNetworkResponse response = this.SendGetRequest(get_params);
-		FacebookResponse fb_response = new FacebookResponse(response, this.NetworkObj);
+		try {
+			String response = this.SendGetRequest(get_params);
+			fb_response = new FacebookResponse(response, this.NetworkObj);
+		}
+		catch (Exception e) {
+			throw new SocialNetworkAPIException(e.getMessage());
+		}
 		return fb_response;
 	}
 	
@@ -70,7 +75,7 @@ public class FacebookRequest extends SocialNetworkRequest {
 			String sig = this.Sig(new HashMap<String, String>(sig_params));
 			post_data.put(Facebook.uri_Sig_key, sig);
 	
-			SocialNetworkResponse response = this.SendPostRequest(URI, post_data, get_args);
+			String response = this.SendPostRequest(URI, post_data, get_args);
 			fb_response = new FacebookResponse(response, this.NetworkObj);
 		}
 		catch (Exception e) {
