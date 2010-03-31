@@ -128,17 +128,19 @@ public class Facebook extends SocialNetwork {
 	 * @param cntxt
 	 * @return
 	 */
-	public void LogIn(String[] requested_perms, Context cntxt) {
+	public void LogIn(String[] requested_perms, Context cntxt, Class LoginChariot) {
 		// First get a mapping of the required params as the base map of query name=value pairs
 		Map<String, String> query_params = this.Request.getRequiredParams(Facebook.REQUIRED_PARAMS_LOGIN);
 		
 		try {
 			// First create an Intent to launch the webview login module.
-			Intent fbLoginIntent = new Intent(cntxt, FBWebViewLogin.class);
+			Intent fbLoginIntent = new Intent(cntxt, LoginChariot);
+			cntxt.startActivity(fbLoginIntent);
 			// Next build the appropriate GET query string and pass it as an extra to the Intent object
 		}
 		catch (Exception e) {
-			
+			String s = e.getMessage();
+			s.charAt(2);
 		}
 	}
 	

@@ -3,6 +3,7 @@ package DroidSocial.Network;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.webkit.WebView;
 import android.widget.TextView;
 
 import DroidSocial.Network.*;
@@ -53,19 +54,22 @@ public class main extends Activity {
         
         this.apiKeyView.setText("API KEY: " + fb_api_key);
         this.secretView.setText("Secret: " + fb_secret);
-                
-        
+      
+       
         Facebook fb = new Facebook(fb_api_key, fb_secret);
         fb.SetDefaultResponseHandlers();
         String auth = "";
         try {
-        	auth = fb.AuthCreateToken();
+        	fb.LogIn(null, this, fblogin.class);
         }
         catch (Exception e) {
         	String s = e.getMessage();
         }
         this.out.setText(auth);
+       
     }
-    
-    
+	public void onResume() {
+		super.onResume();
+		this.out.setText("back");
+	}
 }
