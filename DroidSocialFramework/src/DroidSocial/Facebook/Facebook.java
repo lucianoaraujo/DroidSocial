@@ -109,7 +109,7 @@ public class Facebook extends SocialNetwork {
 		post_params.put(Facebook.uri_CallId_key, time_ms);
 		
 		try {
-			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Users_getLoggedInUser, post_params, null);
+			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Users_getLoggedInUser, post_params, null, null);
 		} 
 		catch (SocialNetworkAPIException e) {
 			// TODO Auto-generated catch block	
@@ -152,7 +152,7 @@ public class Facebook extends SocialNetwork {
 		try {
 			Map<String, String> params = new HashMap<String, String>();
 			params.put(Facebook.uri_AuthToken_key, authTokenVal);
-			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_getSession, params, null);
+			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_getSession, params, null, null);
 			Map<String, String> vals = fbr.Parse();
 		} 
 		catch (SocialNetworkAPIException e) {
@@ -166,7 +166,7 @@ public class Facebook extends SocialNetwork {
 		try {
 			// Set up the parameters we're going to need for the request
 			//Map<String, String> params = new HashMap<String, String>();
-			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_createToken, null, null);
+			FacebookResponse fbr = this.Request.PostAPICall(Facebook.uri_Method_Auth_createToken, null, null, null);
 			Map<String, String> vals = fbr.Parse();
 			
 			authToken = vals.get(Facebook.uri_AuthToken_key);

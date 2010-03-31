@@ -35,12 +35,12 @@ public class FacebookRequest extends SocialNetworkRequest {
 		this.API_KEY = api_key;
 	}
 
-	public FacebookResponse FBGetRequest(Map<String, String> get_params) throws SocialNetworkAPIException {
+	private FacebookResponse FBGetRequest(Map<String, String> get_params, Map<String, String> headers) throws SocialNetworkAPIException {
 		get_params.put(Facebook.uri_Version_key, Facebook.uri_Version_val);
 		FacebookResponse fb_response = null;
 		// Generate the sig value
 		try {
-			String response = this.SendGetRequest(get_params);
+			String response = this.SendGetRequest(get_params, headers);
 			fb_response = new FacebookResponse(response, this.NetworkObj);
 		}
 		catch (Exception e) {
@@ -49,11 +49,11 @@ public class FacebookRequest extends SocialNetworkRequest {
 		return fb_response;
 	}
 	
-	public FacebookResponse PostAPICall(String method_name, Map<String, String> args, Map<String, String> get_args) throws SocialNetworkAPIException {
-		return this.PostAPICall(this.ServiceURI, method_name, args, get_args);
+	public FacebookResponse PostAPICall(String method_name, Map<String, String> args, Map<String, String> get_args, Map<String, String> headers) throws SocialNetworkAPIException {
+		return this.PostAPICall(this.ServiceURI, method_name, args, get_args, headers);
 	}
 	
-	public FacebookResponse PostAPICall(String URI, String method_name, Map<String, String> args, Map<String, String> get_args) throws SocialNetworkAPIException {
+	public FacebookResponse PostAPICall(String URI, String method_name, Map<String, String> args, Map<String, String> get_args, Map<String, String> headers) throws SocialNetworkAPIException {
 		// Get params are not yet implemented!
 		Map<String, String> post_data = this.getRequiredParams();
 		Map<String, String> sig_params = this.getRequiredParams();
@@ -75,7 +75,7 @@ public class FacebookRequest extends SocialNetworkRequest {
 			String sig = this.Sig(new HashMap<String, String>(sig_params));
 			post_data.put(Facebook.uri_Sig_key, sig);
 	
-			String response = this.SendPostRequest(URI, post_data, get_args);
+			String response = this.SendPostRequest(URI, post_data, get_args, headers);
 			fb_response = new FacebookResponse(response, this.NetworkObj);
 		}
 		catch (Exception e) {

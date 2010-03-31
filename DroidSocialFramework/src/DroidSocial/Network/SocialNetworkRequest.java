@@ -51,15 +51,25 @@ public abstract class SocialNetworkRequest {
 		
 	}
 	
-	protected String SendGetRequest(Map<String, String> get_params) throws SocialNetworkAPIException {
+	protected String SendGetRequest(Map<String, String> get_params, Map<String, String> headers) throws SocialNetworkAPIException {
 		String output = "none";
 		String get_param_string = "";
+		Set<String> header_keys = null;
 		
+		// Build the get param string
 		if (get_params != null) get_param_string = ToURIStr(get_params);
 		
 		try {
 			// Create the get request object with any parameters
 			HttpGet getReq = new HttpGet(this.ServiceURI + get_param_string);
+			
+			if (headers != null) {
+				header_keys = headers.keySet();
+				for (String key : header_keys) {
+					getReq.addHeader(new BasicHeader(key, headers.get(key)));
+				}
+			}
+			
 			this.Response = this.Client.execute(getReq);
 			
 			// Get the HttpEntity that contains the response data
@@ -74,36 +84,54 @@ public abstract class SocialNetworkRequest {
 		return output;
 	}
 	
-	protected String SendPostRequest(Map<String, String> post_data, Map<String, String> get_params) {
-		return this.SendPostRequest(this.ServiceURI, post_data, get_params);
+	protected String SendPostRequest(Map<String, String> post_data, Map<String, String> get_params, Map<String, String> headers) {
+		return this.SendPostRequest(this.ServiceURI, post_data, get_params, headers);
 	}
 	
-	protected String SendPostRequest(String URI, Map<String, String> post_data, Map<String, String> get_params) {
-		//TODO: Add support for the get params that may be on this POST request
-		List<NameValuePair> post_req_fields = new ArrayList<NameValuePair>();
-		Set<String> keys = post_data.keySet();
-		String output = "";
+	protected String SendPostRequest(String URI, Map<String, String> post_data, Map<String, String> get_params, Map<String, String> headers) {
+	
+		List<NameValuePair> post_fields = new ArrayList<NameValuePair>();
+		Set<String> post_keys = null;
+		Set<String> header_keys = null;
 		
-		// Create key = value pairs
-		for (String key : keys) post_req_fields.add(new BasicNameValuePair(key, post_data.get(key)));
-		
+		String output = "";		
+		String getStr = "";		
 		
 		try {
-			// Create the post object and entity that it will carry
-			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(post_req_fields);
 			
-			String getStr = "";
-			if (get_params != null) getStr = ToURIStr(get_params);
+			// GET params
+			if (get_params != null) {
+				getStr = ToURIStr(get_params);
+			}
 			
+			// POST params
+			if (post_data != null) {
+				post_keys = post_data.keySet();
+				for (String key : post_keys) {
+					post_fields.add(new BasicNameValuePair(key, post_data.get(key)));
+				}
+			}
+
 			HttpPost p = new HttpPost(URI + "?" + getStr);
-			p.setEntity(entity);
 			
+			// Headers
+			if (headers != null) {
+				header_keys = headers.keySet();
+				for (String key : header_keys) {
+					p.addHeader(new BasicHeader(key, headers.get(key)));
+				}
+			}
+			
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(post_fields);
+			p.setEntity(entity);
+		
 			// execute the request
 			this.Response = this.Client.execute(p);
 
 			HttpEntity en = this.Response.getEntity();
 			InputStream in = en.getContent();
 			output = StreamToString(in);
+			
 		}
 		catch (Exception e) {
 			String msg = e.getMessage();

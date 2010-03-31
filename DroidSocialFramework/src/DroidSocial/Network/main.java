@@ -53,6 +53,7 @@ public class main extends Activity {
         
         this.apiKeyView.setText("API KEY: " + fb_api_key);
         this.secretView.setText("Secret: " + fb_secret);
+                
         
         Facebook fb = new Facebook(fb_api_key, fb_secret);
         fb.SetDefaultResponseHandlers();
