@@ -160,12 +160,13 @@ public abstract class SocialNetworkRequest {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			for (String key : keys) {				
-				sb.append(URLEncoder.encode(key + "=" + params.remove(key), "UTF-8"));
+			for (String key : keys) {
+				// URLEncoder.encode(key + "=" + params.remove(key), "UTF-8")
+				sb.append(key + "=" + params.get(key));
 				if (!keys.isEmpty()) sb.append("&");
 			}
 		}
-		catch(UnsupportedEncodingException e) { /* Do we need to do anything here? */ }
+		//catch(UnsupportedEncodingException e) { /* Do we need to do anything here? */ }
 		catch (Exception e) {}
 		return sb.toString();
 	}

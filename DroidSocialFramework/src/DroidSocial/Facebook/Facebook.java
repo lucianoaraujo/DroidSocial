@@ -3,6 +3,7 @@ package DroidSocial.Facebook;
 import DroidSocial.Events.Facebook.*;
 import DroidSocial.Network.SocialNetwork;
 import DroidSocial.Network.SocialNetworkAPIException;
+import DroidSocial.Network.SocialNetworkRequest;
 
 import java.net.URLEncoder;
 import java.util.*;
@@ -55,9 +56,20 @@ public class Facebook extends SocialNetwork {
 	
 	public static final String uri_FBConnect_key  = "fbconnect";
 	
+	public static final String uri_ReturnSession_key = "return_session";
+	
+	public static final String uri_Next_key = "next";
+	
+	public static final String uri_CancelUrl_key = "cancel_url";
+	
+	public static final String uri_RequestedPermissions_key = "req_perms";
+	
+	
 	public static final String RESPONSE_KEY_AUTH_TOKEN = "auth_createtoken_response";
 	public static final String RESPONSE_KEY_GET_SESSION = "auth_getSession_response";
 	public static final String RESPONSE_KEY_ERROR = "error_response";
+	
+	public static final String FB_LOGIN_PARAMS = "FB_LOGIN_PARAMS";
 	
 	private String Secret = null;
 	private String AuthTokenVal = "";
@@ -130,13 +142,30 @@ public class Facebook extends SocialNetwork {
 	 */
 	public void LogIn(String[] requested_perms, Context cntxt, Class LoginChariot) {
 		// First get a mapping of the required params as the base map of query name=value pairs
-		Map<String, String> query_params = this.Request.getRequiredParams(Facebook.REQUIRED_PARAMS_LOGIN);
+		Map<String, String> query_params = this.Request.getRequiredParams(Facebook.REQUIRED_PARAMS_LOGIN_SESSION_ONLY);
+		String query_str = "";
+		String permission_csv = "";
+		
+		// Next, if we've got requested permissions, build a csv string of them so that we can put it onto the query_params
+		if (requested_perms != null) {
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < requested_perms.length; i++) {
+				sb.append(requested_perms[i]);
+				if (i < requested_perms.length - 1) sb.append(',');
+			}
+			if (sb.length() > 0 ) permission_csv = sb.toString();
+		}
+		
+		if (!permission_csv.equals("")) query_params.put(Facebook.uri_RequestedPermissions_key, permission_csv);
+		
+		// build the GET query string
+		query_str = FacebookRequest.ToURIStr(query_params);
 		
 		try {
 			// First create an Intent to launch the webview login module.
 			Intent fbLoginIntent = new Intent(cntxt, LoginChariot);
+			fbLoginIntent.putExtra(Facebook.FB_LOGIN_PARAMS, query_str);
 			cntxt.startActivity(fbLoginIntent);
-			// Next build the appropriate GET query string and pass it as an extra to the Intent object
 		}
 		catch (Exception e) {
 			String s = e.getMessage();

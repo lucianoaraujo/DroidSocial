@@ -24,8 +24,15 @@ public class FBWebViewLogin extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
-		String url = "http://www.facebook.com/login.php";
+		// get the bundle
+		Bundle extras = this.getIntent().getExtras();
+		
+		// get the query string
+		String queryStr = extras.getString(Facebook.FB_LOGIN_PARAMS);
+		
+		String url = "http://www.facebook.com/login.php?";
+		
+		if (queryStr != null) url += queryStr;
 		
 		// Create the objects we need			
 		this.fb_login_view = new WebView(this);

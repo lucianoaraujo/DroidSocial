@@ -110,7 +110,10 @@ public class FacebookRequest extends SocialNetworkRequest {
 			case Facebook.REQUIRED_PARAMS_LOGIN_SESSION_ONLY:
 				data.put(Facebook.uri_SessionOnly_key, "true");
 				data.put(Facebook.uri_FBConnect_key, "true");
+				data.put(Facebook.uri_ReturnSession_key, "true");
 				data.put(Facebook.uri_ConnectDisplay_key, Facebook.uri_ConnectDisplay_val);
+				data.put(Facebook.uri_CancelUrl_key, "http://www.facebook.com/connect/login_failure.html");
+				data.put(Facebook.uri_Next_key, "http://www.facebook.com/connect/login_success.html");
 				break;
 				
 			case Facebook.REQUIRED_PARAMS_LOGIN:
