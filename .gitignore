@@ -1,3 +1,6 @@
 # Compiled source #
 ###################
 *.class
+*.apk
+*.dex
+.ap_
