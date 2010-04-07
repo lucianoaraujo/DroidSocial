@@ -10,6 +10,7 @@ import DroidSocial.Network.*;
 import DroidSocial.Network.R.layout;
 import DroidSocial.Network.R.id;
 import DroidSocial.Facebook.*;
+import DroidSocial.Twitter.*;
 /**
  * 
  * FACEBOOK
@@ -35,19 +36,24 @@ import DroidSocial.Facebook.*;
  */
 public class main extends Activity {
     
-	private static final String fb_api_key = "e9c48bbb18c3887c7c8cabd46c66dd9b";
-	
+	private static final String fb_api_key = "e9c48bbb18c3887c7c8cabd46c66dd9b";	
 	private static final String fb_secret = "386b44cee55d8fdfef23a77e52ea524c";
 	
 	private TextView apiKeyView;
 	private TextView secretView;
 	private TextView out;
+	
+	// Twitter Test Values
+	private static final String tw_username = "dalooch";
+	private static final String tw_password = "1234567890";
+	
 	/** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.main);
     
+        /* Facebook test run * /
         this.apiKeyView = (TextView) this.findViewById(R.id.api_key);
         this.secretView = (TextView) this.findViewById(R.id.secret);
         this.out = (TextView) this.findViewById(R.id.output);
@@ -66,6 +72,22 @@ public class main extends Activity {
         	String s = e.getMessage();
         }
         this.out.setText(auth);
+        /**/
+        
+        /* Twitter test run */
+        this.out = (TextView) this.findViewById(R.id.output);
+        
+        Twitter tw = new Twitter( tw_username, tw_password );
+        
+        String auth = "";
+        try {
+        	auth = tw.accountVerifyCredentials();
+        }
+        catch (Exception e) {
+        	String s = e.getMessage();
+        }
+        this.out.setText(auth);
+        /**/
        
     }
 	public void onResume() {
