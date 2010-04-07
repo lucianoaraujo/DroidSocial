@@ -64,6 +64,7 @@ public class Facebook extends SocialNetwork {
 	
 	public static final String uri_RequestedPermissions_key = "req_perms";
 	
+	public static final String LOGIN_NEXT = "http://www.facebook.com/connect/login_success.html";
 	
 	public static final String RESPONSE_KEY_AUTH_TOKEN = "auth_createtoken_response";
 	public static final String RESPONSE_KEY_GET_SESSION = "auth_getSession_response";

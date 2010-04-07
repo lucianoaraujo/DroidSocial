@@ -160,13 +160,13 @@ public abstract class SocialNetworkRequest {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
+			int count = 1;
 			for (String key : keys) {
-				// URLEncoder.encode(key + "=" + params.remove(key), "UTF-8")
 				sb.append(key + "=" + params.get(key));
-				if (!keys.isEmpty()) sb.append("&");
+				count++;
+				if (count <= keys.size()) sb.append("&");
 			}
 		}
-		//catch(UnsupportedEncodingException e) { /* Do we need to do anything here? */ }
 		catch (Exception e) {}
 		return sb.toString();
 	}
