@@ -58,7 +58,11 @@ public class FBWebViewLogin extends Activity {
 	private class FBLoginWebClient extends WebViewClient {
 		
 		private Activity activity;
-		public FBLoginWebClient(Activity a) {super(); this.activity = a;}
+		
+		public FBLoginWebClient(Activity a) {
+			super();
+			this.activity = a;
+		}
 		
 		@Override
 		/**
@@ -73,6 +77,8 @@ public class FBWebViewLogin extends Activity {
 				nextIndex = url.indexOf("session=");
 				// get the json code
 				String json_code = URLDecoder.decode(url.substring(nextIndex));
+				nextIndex = json_code.indexOf("=");
+				json_code = json_code.substring(nextIndex + 1);
 				
 				this.activity.finish();
 				return true;

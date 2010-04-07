@@ -52,6 +52,10 @@ public abstract class SocialNetworkRequest {
 	}
 	
 	protected String SendGetRequest(Map<String, String> get_params, Map<String, String> headers) throws SocialNetworkAPIException {
+		return this.SendGetRequest(this.ServiceURI, get_params, headers);
+	}
+	
+	protected String SendGetRequest(String URI, Map<String, String> get_params, Map<String, String> headers) throws SocialNetworkAPIException {
 		String output = "none";
 		String get_param_string = "";
 		Set<String> header_keys = null;
@@ -61,7 +65,7 @@ public abstract class SocialNetworkRequest {
 		
 		try {
 			// Create the get request object with any parameters
-			HttpGet getReq = new HttpGet(this.ServiceURI + get_param_string);
+			HttpGet getReq = new HttpGet(URI + "?" + get_param_string);
 			
 			if (headers != null) {
 				header_keys = headers.keySet();
